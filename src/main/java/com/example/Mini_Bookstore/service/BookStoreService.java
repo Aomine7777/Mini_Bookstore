@@ -1,16 +1,21 @@
 package com.example.Mini_Bookstore.service;
 
 
-import com.example.Mini_Bookstore.entity.Book;
 import com.example.Mini_Bookstore.entity.BookStore;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BookStoreService  {
+@Service
+public interface BookStoreService {
     BookStore addBookStore(BookStore bookStore);
-    Optional<BookStore> getBookStoreByID(String id) ;
+
+    Optional<BookStore> getBookStoreByID(String id);
+
     public BookStore updateBookStore(String id, BookStore updatedBookStore);
+
     public Optional<BookStore> deleteBookStoreById(String id);
+
     public List<BookStore> getAllBookStores();
 }

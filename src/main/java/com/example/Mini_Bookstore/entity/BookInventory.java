@@ -13,8 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class BookInventory {
     @Id
     private String id;
-    private Book book;
-    private BookStore bookStore;
+    private String bookId;
+    private String bookStoreId;
     private int price;
     private int totalCount;
     private int soldCount;

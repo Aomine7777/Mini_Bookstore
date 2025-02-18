@@ -4,9 +4,11 @@ import com.example.Mini_Bookstore.entity.Book;
 import com.example.Mini_Bookstore.entity.Category;
 import com.example.Mini_Bookstore.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/books")
@@ -16,40 +18,45 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public Book addBook(@RequestBody Book book) {
-        return bookService.AddBook(book);
-    }
-    @GetMapping("/{id}")
-    public Book getBookById(@PathVariable String id) {
-        return bookService.getBookById(id);
-    }
-    @GetMapping
-    public List<Book> getAllBooks() {
-     return bookService.getAllBooks();
-    }
-    @GetMapping("/{id}/available")
-    public int getBookAvailableCount( @PathVariable String id) {
-        return bookService.getBooksAvailableCount(id);
+    public ResponseEntity<Book> addBook(@RequestBody Book book) {
+        return ResponseEntity.ok(bookService.addBook(book));
     }
 
-    @PostMapping("/{storeId}/{bookId}/sell")
-    public void sellBooks(@PathVariable String storeId, @PathVariable String bookId, @RequestParam int quantity) {
-        bookService.sellBooks(storeId, bookId, quantity);
+    @GetMapping("/{id}")
+    public ResponseEntity<Book> getBookById(@PathVariable String id) {
+        Optional<Book> book = bookService.getBookById(id);
+        return book.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Book>> getAllBooks() {
+        return ResponseEntity.ok(bookService.getAllBooks());
+    }
+
+    @GetMapping("/{id}/count")
+    public ResponseEntity<Integer> getBookCount(@PathVariable String id) {
+        return ResponseEntity.ok(bookService.getBookCount(id));
+    }
+
+    @PutMapping
+    public ResponseEntity<Book> updateBook(@RequestBody Book book) {
+        return ResponseEntity.ok(bookService.updateBook(book));
+    }
+
+    @PostMapping("/{bookId}/sell/{bookStoreId}")
+    public ResponseEntity<String> sellOneBook(@PathVariable String bookId, @PathVariable String bookStoreId) {
+        boolean success = bookService.sellOneBook(bookId, bookStoreId);
+        return success ? ResponseEntity.ok("Book sold") : ResponseEntity.badRequest().body("Not enough stock");
+    }
+
+    @PostMapping("/{bookId}/sell/{bookStoreId}/{quantity}")
+    public ResponseEntity<String> sellMultipleBooks(@PathVariable String bookId, @PathVariable String bookStoreId, @PathVariable int quantity) {
+        boolean success = bookService.sellMultipleBooks(bookId, bookStoreId, quantity);
+        return success ? ResponseEntity.ok("Books sold") : ResponseEntity.badRequest().body("Not enough stock");
     }
 
     @GetMapping("/search")
-    public List<Book> searchBooks(@RequestParam(required = false) String keyword,
-                                  @RequestParam(required = false) Category category) {
-        return bookService.searchBooks(keyword, category);
-    }
-
-    @GetMapping("/sold/author")
-    public int getSoldBooksByAuthor(@RequestParam String author) {
-        return bookService.getSoldBooksByAuthor(author);
-    }
-
-    @GetMapping("/sold/category")
-    public int getSoldBooksByCategory(@RequestParam Category category) {
-        return bookService.getSoldBooksByCategory(category);
+    public ResponseEntity<List<Book>> searchBooks(@RequestParam(required = false) Category category, @RequestParam(required = false) String keyword) {
+        return ResponseEntity.ok(bookService.searchBooks(category, keyword));
     }
 }

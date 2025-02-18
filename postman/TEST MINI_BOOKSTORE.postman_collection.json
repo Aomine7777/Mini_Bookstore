@@ -1,0 +1,517 @@
+{
+	"info": {
+		"_postman_id": "1265557d-105e-4f61-914e-bdf46fb5428f",
+		"name": "TEST MINI_BOOKSTORE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33851805"
+	},
+	"item": [
+		{
+			"name": "ADD BOOKS",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"id\": 1,\r\n        \"title\": \"To Kill a Mockingbird\",\r\n        \"author\": \"Harper Lee\",\r\n        \"Category\": {\r\n            \"id\": \"1\",\r\n            \"name\": \"Fiction\"\r\n        },\r\n        \"addedAt\": \"2024-11-21T10:00:00\",\r\n        \"publicationDate\": \"1999-07-11\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ADD INVENTORY",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"book\":{\r\n        \"id\": 1,\r\n        \"title\": \"To Kill a Mockingbird\",\r\n        \"author\": \"Harper Lee\",\r\n        \"Category\": {\r\n            \"id\": \"1\",\r\n            \"name\": \"Fiction\"\r\n        },\r\n        \"addedAt\": \"2024-11-21T10:00:00\",\r\n        \"publicationDate\": \"1999-07-11\"\r\n    },\r\n    \"bookStore\": {\r\n        \"id\": 1,\r\n        \"name\": \"Goblin's Store\",\r\n        \"location\": \"123 Elm Street\"\r\n    },\r\n    \"price\": 99,\r\n    \"totalCount\": 77,\r\n    \"soldCount\": 7\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/inventory",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"inventory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ADD BOOK STORE",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"Goblin's Store\",\r\n    \"location\": \"123 Elm Street\",\r\n    \"bookInventories\": [\r\n        {\r\n            \"id\": 1,\r\n            \"title\": \"To Kill a Mockingbird\",\r\n            \"author\": \"Harper Lee\",\r\n        \"Category\": {\r\n            \"id\": \"1\",\r\n            \"name\": \"Fiction\"\r\n        },\r\n        \"addedAt\": \"2024-11-21T10:00:00\",\r\n        \"publicationDate\": \"1999-07-11\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/bookstore",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"bookstore"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET BOOKS BY ID",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "GET ALL BOOKS",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "GET BOOKS AVAILABLE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/books/1/available",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"books",
+						"1",
+						"available"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/books/search?keyword=&category=ROMANCE",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"books",
+						"search"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": ""
+						},
+						{
+							"key": "category",
+							"value": "ROMANCE"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SELL BOOKS",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/books/1/1/sell?quantity=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"books",
+						"1",
+						"1",
+						"sell"
+					],
+					"query": [
+						{
+							"key": "quantity",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET BOOK STORE BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/bookstore/67b2595c56d18d2323e41b76",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"bookstore",
+						"67b2595c56d18d2323e41b76"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET ALL BOOK STORE",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE BOOK STORE",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Updated Bookstore\",\r\n  \"location\": \"Los Angeles\",\r\n  \"bookInventories\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/bookstore/67b25b5456d18d2323e41b77",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"bookstore",
+						"67b25b5456d18d2323e41b77"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE BOOK STORE",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/bookstore/67b2595c56d18d2323e41b76",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"bookstore",
+						"67b2595c56d18d2323e41b76"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ADD BOOK INVENTORY",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"bookId\": \"67b2510d9eaf5d0ce736379d\",\r\n  \"bookStoreId\": \"67b2645c56d18d2323e41b78\",\r\n  \"price\": 45,\r\n  \"totalCount\": 100,\r\n  \"soldCount\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/book-inventory",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"book-inventory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET BOOK INVENTORY BY ID",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "GET ALL BOOK INVENTORIES",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "GET INVENTORIES BY BOOK ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/book-inventory/book/67b2510d9eaf5d0ce736379d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"book-inventory",
+						"book",
+						"67b2510d9eaf5d0ce736379d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET INVENTORIES BY STORE ID",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE BOOK INVENTORY",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"bookId\": \"123\",\r\n  \"bookStoreId\": \"456\",\r\n  \"price\": 550,\r\n  \"totalCount\": 120,\r\n  \"soldCount\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/book-inventory/67b26509af323c7a69ad0a35",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"book-inventory",
+						"67b26509af323c7a69ad0a35"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE BOOK INVENTORY",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/book-inventory/67b26509af323c7a69ad0a35",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"book-inventory",
+						"67b26509af323c7a69ad0a35"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SELL ONE BOOK",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "bookId",
+							"value": "67b2510d9eaf5d0ce736379d",
+							"type": "text"
+						},
+						{
+							"key": "bookStoreId",
+							"value": "67b2645c56d18d2323e41b78",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/book-inventory/sell-one",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"book-inventory",
+						"sell-one"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SELL MULTIPLE BOOKS",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "bookId",
+						"value": "67b2510d9eaf5d0ce736379d",
+						"type": "text"
+					},
+					{
+						"key": "bookStoreId",
+						"value": "67b2645c56d18d2323e41b78",
+						"type": "text"
+					},
+					{
+						"key": "quantity",
+						"value": "7",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/book-inventory/sell-multiple",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"book-inventory",
+						"sell-multiple"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET SOLD BOOKS BY AUTHOR",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/book-inventory/sold-by-category/COMPUTERS_TECH",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"book-inventory",
+						"sold-by-category",
+						"COMPUTERS_TECH"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET SOLD BOKS BY CATEGORY",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/book-inventory/sold-by-author/Joshua Bloch",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"book-inventory",
+						"sold-by-author",
+						"Joshua Bloch"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

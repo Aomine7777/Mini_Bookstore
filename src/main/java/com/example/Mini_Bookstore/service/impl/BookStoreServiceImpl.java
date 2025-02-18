@@ -24,19 +24,19 @@ public class BookStoreServiceImpl implements BookStoreService {
     public Optional<BookStore> getBookStoreByID(String id) {
         return bookStoreRepository.findById(id);
     }
+
     public List<BookStore> getAllBookStores() {
         return bookStoreRepository.findAll();
     }
+
     @Override
     public BookStore updateBookStore(String id, BookStore updatedBookStore) {
-        return bookStoreRepository.findById(id)
-                .map(existingBookStore -> {
-                    existingBookStore.setName(updatedBookStore.getName());
-                    existingBookStore.setLocation(updatedBookStore.getLocation());
-                    existingBookStore.setBookInventories(updatedBookStore.getBookInventories());
-                    return bookStoreRepository.save(existingBookStore);
-                })
-                .orElseThrow(() -> new RuntimeException("BookStore not found with id: " + id));
+        return bookStoreRepository.findById(id).map(existingBookStore -> {
+            existingBookStore.setName(updatedBookStore.getName());
+            existingBookStore.setLocation(updatedBookStore.getLocation());
+            existingBookStore.setBookInventories(updatedBookStore.getBookInventories());
+            return bookStoreRepository.save(existingBookStore);
+        }).orElseThrow(() -> new RuntimeException("BookStore not found with id: " + id));
     }
 
     @Override

@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MiniBookstoreApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MiniBookstoreApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MiniBookstoreApplication.class, args);
+    }
 
 }
