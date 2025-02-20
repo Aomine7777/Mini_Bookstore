@@ -24,9 +24,5 @@ public interface BookService {
 
     boolean sellMultipleBooks(String bookId, String bookStoreId, int quantity);
 
-    int getSoldBooksByAuthor(String author);
-
-    int getSoldBooksByCategory(Category category);
-
     List<Book> searchBooks(Category category, String keyword);
 }

@@ -13,9 +13,9 @@ public interface BookStoreService {
 
     Optional<BookStore> getBookStoreByID(String id);
 
-    public BookStore updateBookStore(String id, BookStore updatedBookStore);
+    BookStore updateBookStore(String id, BookStore updatedBookStore);
 
-    public Optional<BookStore> deleteBookStoreById(String id);
+    Optional<BookStore> deleteBookStoreById(String id);
 
-    public List<BookStore> getAllBookStores();
+    List<BookStore> getAllBookStores();
 }

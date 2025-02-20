@@ -86,14 +86,4 @@ public class BookServiceImpl implements BookService {
         }
         return bookRepository.findAll();
     }
-
-
-    public int getSoldBooksByAuthor(String author) {
-        return bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase("", author).stream().mapToInt(book -> bookInventoryRepository.findByBookId(book.getId()).stream().mapToInt(BookInventory::getSoldCount).sum()).sum();
-    }
-
-
-    public int getSoldBooksByCategory(Category category) {
-        return bookRepository.findByCategory(category).stream().mapToInt(book -> bookInventoryRepository.findByBookId(book.getId()).stream().mapToInt(BookInventory::getSoldCount).sum()).sum();
-    }
 }
