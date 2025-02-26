@@ -1,7 +1,7 @@
 package com.example.Mini_Bookstore.service;
 
 
-import com.example.Mini_Bookstore.entity.Book;
+import com.example.Mini_Bookstore.dto.BookDTO;
 import com.example.Mini_Bookstore.entity.Category;
 import org.springframework.stereotype.Service;
 
@@ -10,19 +10,17 @@ import java.util.Optional;
 
 @Service
 public interface BookService {
-    Book addBook(Book book);
+    BookDTO addBook(BookDTO bookDTO);
 
-    Optional<Book> getBookById(String id);
+    Optional<BookDTO> getBookById(String id);
 
-    List<Book> getAllBooks();
+    List<BookDTO> getAllBooks();
 
     int getBookCount(String bookId);
 
-    Book updateBook(Book updatedBook);
-
-    boolean sellOneBook(String bookId, String bookStoreId);
+    BookDTO  updateBook(BookDTO updatedBook);
 
     boolean sellMultipleBooks(String bookId, String bookStoreId, int quantity);
 
-    List<Book> searchBooks(Category category, String keyword);
+    List<BookDTO> searchBooks(Category category, String keyword);
 }

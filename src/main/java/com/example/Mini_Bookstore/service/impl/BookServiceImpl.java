@@ -1,6 +1,7 @@
 package com.example.Mini_Bookstore.service.impl;
 
 
+import com.example.Mini_Bookstore.dto.BookDTO;
 import com.example.Mini_Bookstore.entity.Book;
 import com.example.Mini_Bookstore.entity.BookInventory;
 import com.example.Mini_Bookstore.entity.Category;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,43 +23,33 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookInventoryRepository bookInventoryRepository;
 
-    public Book addBook(Book book) {
-        return bookRepository.save(book);
+    public BookDTO addBook(BookDTO bookDTO) {
+        Book book = bookDTO.toEntity();
+        return BookDTO.fromEntity(bookRepository.save(book));
     }
 
-    public Optional<Book> getBookById(String id) {
-        return bookRepository.findById(id);
+    public Optional<BookDTO> getBookById(String id) {
+        return bookRepository.findById(id).map(BookDTO::new);
     }
 
 
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public List<BookDTO> getAllBooks() {
+        return bookRepository.findAll().stream()
+             .map(BookDTO::fromEntity)
+             .collect(Collectors.toList());
     }
 
 
     public int getBookCount(String bookId) {
-        return bookInventoryRepository.findByBookId(bookId).stream().mapToInt(BookInventory::getTotalCount).sum();
+        return bookInventoryRepository.findByBookId(bookId).stream()
+             .mapToInt(BookInventory::getTotalCount)
+             .sum();
     }
 
 
-    public Book updateBook(Book updatedBook) {
-        return bookRepository.save(updatedBook);
-    }
-
-
-    @Transactional
-    public boolean sellOneBook(String bookId, String bookStoreId) {
-        Optional<BookInventory> inventoryOpt = bookInventoryRepository.findByBookIdAndBookStoreId(bookId, bookStoreId);
-        if (inventoryOpt.isPresent()) {
-            BookInventory inventory = inventoryOpt.get();
-            if (inventory.getTotalCount() > 0) {
-                inventory.setTotalCount(inventory.getTotalCount() - 1);
-                inventory.setSoldCount(inventory.getSoldCount() + 1);
-                bookInventoryRepository.save(inventory);
-                return true;
-            }
-        }
-        return false;
+    public BookDTO updateBook(BookDTO bookDTO) {
+        Book updatedBook = bookDTO.toEntity();
+        return BookDTO.fromEntity(bookRepository.save(updatedBook));
     }
 
 
@@ -77,13 +69,17 @@ public class BookServiceImpl implements BookService {
     }
 
 
-    public List<Book> searchBooks(Category category, String keyword) {
-        if (category != null) {
-            return bookRepository.findByCategory(category);
+    public List<BookDTO> searchBooks(Category category, String keyword) {
+        List<Book> books;
+        if (category != null && keyword != null && !keyword.isEmpty()) {
+            books = bookRepository.findByCategoryAndTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(category, keyword, keyword);
+        } else if (category != null) {
+            books = bookRepository.findByCategory(category);
+        } else if (keyword != null && !keyword.isEmpty()) {
+            books = bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(keyword, keyword);
+        } else {
+            books = bookRepository.findAll();
         }
-        if (keyword != null && !keyword.isEmpty()) {
-            return bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(keyword, keyword);
-        }
-        return bookRepository.findAll();
+        return books.stream().map(BookDTO::new).toList();
     }
 }

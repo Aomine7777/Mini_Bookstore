@@ -1,6 +1,6 @@
 package com.example.Mini_Bookstore.service;
 
-import com.example.Mini_Bookstore.entity.BookInventory;
+import com.example.Mini_Bookstore.dto.BookInventoryDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,21 +8,19 @@ import java.util.Optional;
 
 @Service
 public interface BookInventoryService {
-    BookInventory addBookInventory(BookInventory bookInventory);
+    BookInventoryDTO addBookInventory(BookInventoryDTO bookInventoryDTO);
 
-    Optional<BookInventory> getBookInventoryById(String id);
+    Optional<BookInventoryDTO> getBookInventoryById(String id);
 
-    List<BookInventory> getAllBookInventories();
+    List<BookInventoryDTO> getAllBookInventories();
 
-    List<BookInventory> getBookInventoriesByBookId(String bookId);
+    List<BookInventoryDTO> getBookInventoriesByBookId(String bookId);
 
-    List<BookInventory> getBookInventoriesByStoreId(String bookStoreId);
+    List<BookInventoryDTO> getBookInventoriesByStoreId(String bookStoreId);
 
-    Optional<BookInventory> updateBookInventory(String id, BookInventory bookInventory);
+    Optional<BookInventoryDTO> updateBookInventory(String id, BookInventoryDTO bookInventoryDTO);
 
     void deleteBookInventory(String id);
-
-    Optional<BookInventory> sellOneBook(String bookId, String bookStoreId);
 
     boolean sellMultipleBooks(String bookId, String bookStoreId, int quantity);
 

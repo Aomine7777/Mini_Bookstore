@@ -1,5 +1,6 @@
 package com.example.Mini_Bookstore.service.impl;
 
+import com.example.Mini_Bookstore.dto.BookInventoryDTO;
 import com.example.Mini_Bookstore.entity.BookInventory;
 import com.example.Mini_Bookstore.entity.Category;
 import com.example.Mini_Bookstore.repository.BookInventoryRepository;
@@ -20,55 +21,46 @@ public class BookInventoryServiceImpl implements BookInventoryService {
     private final BookRepository bookRepository;
 
     @Override
-    public BookInventory addBookInventory(BookInventory bookInventory) {
-        return bookInventoryRepository.save(bookInventory);
+    public BookInventoryDTO addBookInventory(BookInventoryDTO bookInventoryDTO) {
+        return BookInventoryDTO.fromEntity(bookInventoryRepository.save(bookInventoryDTO.toEntity()));
     }
 
     @Override
-    public Optional<BookInventory> getBookInventoryById(String id) {
-        return bookInventoryRepository.findById(id);
+    public Optional<BookInventoryDTO> getBookInventoryById(String id) {
+        return bookInventoryRepository.findById(id).map(BookInventoryDTO::new);
     }
 
     @Override
-    public List<BookInventory> getAllBookInventories() {
-        return bookInventoryRepository.findAll();
+    public List<BookInventoryDTO> getAllBookInventories() {
+        return BookInventoryDTO.fromEntities(bookInventoryRepository.findAll());
     }
 
     @Override
-    public List<BookInventory> getBookInventoriesByBookId(String bookId) {
-        return bookInventoryRepository.findByBookId(bookId);
+    public List<BookInventoryDTO> getBookInventoriesByBookId(String bookId) {
+        return BookInventoryDTO.fromEntities(bookInventoryRepository.findByBookId(bookId));
     }
 
     @Override
-    public List<BookInventory> getBookInventoriesByStoreId(String bookStoreId) {
-        return bookInventoryRepository.findByBookStoreId(bookStoreId);
+    public List<BookInventoryDTO> getBookInventoriesByStoreId(String bookStoreId) {
+        return BookInventoryDTO.fromEntities(bookInventoryRepository.findByBookStoreId(bookStoreId));
     }
 
     @Override
-    public Optional<BookInventory> updateBookInventory(String id, BookInventory bookInventory) {
+    public Optional<BookInventoryDTO> updateBookInventory(String id, BookInventoryDTO bookInventoryDTO) {
         return bookInventoryRepository.findById(id).map(existingInventory -> {
-            existingInventory.setBookId(bookInventory.getBookId());
-            existingInventory.setBookStoreId(bookInventory.getBookStoreId());
-            existingInventory.setPrice(bookInventory.getPrice());
-            existingInventory.setTotalCount(bookInventory.getTotalCount());
-            existingInventory.setSoldCount(bookInventory.getSoldCount());
-            return bookInventoryRepository.save(existingInventory);
+            existingInventory.setBookId(bookInventoryDTO.bookId());
+            existingInventory.setBookStoreId(bookInventoryDTO.bookStoreId());
+            existingInventory.setPrice(bookInventoryDTO.price());
+            existingInventory.setTotalCount(bookInventoryDTO.totalCount());
+            existingInventory.setSoldCount(bookInventoryDTO.soldCount());
+            BookInventory updatedInventory = bookInventoryRepository.save(existingInventory);
+            return new BookInventoryDTO(updatedInventory);
         });
     }
 
     @Override
     public void deleteBookInventory(String id) {
         bookInventoryRepository.deleteById(id);
-    }
-
-    @Override
-    @Transactional
-    public Optional<BookInventory> sellOneBook(String bookId, String bookStoreId) {
-        return bookInventoryRepository.findByBookIdAndBookStoreId(bookId, bookStoreId).filter(inventory -> inventory.getTotalCount() > 0).map(inventory -> {
-            inventory.setTotalCount(inventory.getTotalCount() - 1);
-            inventory.setSoldCount(inventory.getSoldCount() + 1);
-            return bookInventoryRepository.save(inventory);
-        });
     }
 
     @Override
@@ -84,11 +76,21 @@ public class BookInventoryServiceImpl implements BookInventoryService {
 
     @Override
     public long getSoldBooksByAuthor(String author) {
-        return bookRepository.findByAuthor(author).stream().mapToLong(book -> bookInventoryRepository.findByBookId(book.getId()).stream().mapToLong(BookInventory::getSoldCount).sum()).sum();
+        return bookRepository.findByAuthor(author).stream()
+             .mapToLong(book -> 
+             bookInventoryRepository.findByBookId(book.getId()).stream()
+             .mapToLong(BookInventory::getSoldCount)
+             .sum())
+             .sum();
     }
 
     @Override
     public long getSoldBooksByCategory(String category) {
-        return bookRepository.findByCategory(Category.valueOf(category.toUpperCase())).stream().mapToLong(book -> bookInventoryRepository.findByBookId(book.getId()).stream().mapToLong(BookInventory::getSoldCount).sum()).sum();
+        return bookRepository.findByCategory(Category.valueOf(category.toUpperCase())).stream()
+             .mapToLong(book ->
+             bookInventoryRepository.findByBookId(book.getId()).stream()
+             .mapToLong(BookInventory::getSoldCount)
+             .sum())
+             .sum();
     }
 }

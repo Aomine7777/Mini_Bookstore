@@ -1,6 +1,6 @@
 package com.example.Mini_Bookstore.controller;
 
-import com.example.Mini_Bookstore.entity.BookStore;
+import com.example.Mini_Bookstore.dto.BookStoreDTO;
 import com.example.Mini_Bookstore.service.BookStoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,34 +17,40 @@ public class BookStoreController {
     private final BookStoreService bookStoreService;
 
     @PostMapping
-    public ResponseEntity<BookStore> addBookStore(@RequestBody BookStore bookStore) {
-        return ResponseEntity.ok(bookStoreService.addBookStore(bookStore));
+    public ResponseEntity<BookStoreDTO> addBookStore(@RequestBody BookStoreDTO bookStoreDTO) {
+        BookStoreDTO createdBookStore = bookStoreService.addBookStore(bookStoreDTO);
+        return ResponseEntity.ok(createdBookStore);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookStore> getBookStoreById(@PathVariable String id) {
-        return bookStoreService.getBookStoreByID(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<BookStoreDTO> getBookStoreById(@PathVariable String id) {
+        return bookStoreService.getBookStoreByID(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<BookStore>> getAllBookStore() {
-        return ResponseEntity.ok(bookStoreService.getAllBookStores());
+    public ResponseEntity<List<BookStoreDTO>> getAllBookStores() {
+        List<BookStoreDTO> bookStores = bookStoreService.getAllBookStores();
+        return ResponseEntity.ok(bookStores);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookStore> updateBookStore(@PathVariable String id, @RequestBody BookStore bookStore) {
+    public ResponseEntity<BookStoreDTO> updateBookStore(@PathVariable String id, @RequestBody BookStoreDTO bookStoreDTO) {
         try {
-            return ResponseEntity.ok(bookStoreService.updateBookStore(id, bookStore));
+            BookStoreDTO updatedBookStore = bookStoreService.updateBookStore(id, bookStoreDTO);
+            return ResponseEntity.ok(updatedBookStore);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<BookStore> deleteBookStore(@PathVariable String id) {
+    public ResponseEntity<BookStoreDTO> deleteBookStore(@PathVariable String id) {
         try {
-            bookStoreService.deleteBookStoreById(id);
-            return ResponseEntity.noContent().build();
+            return bookStoreService.deleteBookStoreById(id)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

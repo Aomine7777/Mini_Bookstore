@@ -1,6 +1,6 @@
 package com.example.Mini_Bookstore.controller;
 
-import com.example.Mini_Bookstore.entity.BookInventory;
+import com.example.Mini_Bookstore.dto.BookInventoryDTO;
 import com.example.Mini_Bookstore.service.BookInventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,33 +16,35 @@ public class BookInventoryController {
     private final BookInventoryService bookInventoryService;
 
     @PostMapping
-    public ResponseEntity<BookInventory> addBookInventory(@RequestBody BookInventory bookInventory) {
-        return ResponseEntity.ok(bookInventoryService.addBookInventory(bookInventory));
+    public ResponseEntity<BookInventoryDTO> addBookInventory(@RequestBody BookInventoryDTO bookInventoryDTO) {
+        return ResponseEntity.ok(bookInventoryService.addBookInventory(bookInventoryDTO));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookInventory> getBookInventoryById(@PathVariable String id) {
-        return bookInventoryService.getBookInventoryById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<BookInventoryDTO> getBookInventoryById(@PathVariable String id) {
+        return bookInventoryService.getBookInventoryById(id)
+             .map(ResponseEntity::ok)
+             .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<BookInventory>> getAllBookInventories() {
+    public ResponseEntity<List<BookInventoryDTO>> getAllBookInventories() {
         return ResponseEntity.ok(bookInventoryService.getAllBookInventories());
     }
 
     @GetMapping("/book/{bookId}")
-    public ResponseEntity<List<BookInventory>> getInventoriesByBookId(@PathVariable String bookId) {
+    public ResponseEntity<List<BookInventoryDTO>> getInventoriesByBookId(@PathVariable String bookId) {
         return ResponseEntity.ok(bookInventoryService.getBookInventoriesByBookId(bookId));
     }
 
     @GetMapping("/store/{bookStoreId}")
-    public ResponseEntity<List<BookInventory>> getInventoriesByStoreId(@PathVariable String bookStoreId) {
+    public ResponseEntity<List<BookInventoryDTO>> getInventoriesByStoreId(@PathVariable String bookStoreId) {
         return ResponseEntity.ok(bookInventoryService.getBookInventoriesByStoreId(bookStoreId));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookInventory> updateBookInventory(@PathVariable String id, @RequestBody BookInventory bookInventory) {
-        return bookInventoryService.updateBookInventory(id, bookInventory).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<BookInventoryDTO> updateBookInventory(@PathVariable String id, @RequestBody BookInventoryDTO bookInventoryDTO) {
+        return bookInventoryService.updateBookInventory(id, bookInventoryDTO).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
@@ -52,8 +54,13 @@ public class BookInventoryController {
     }
 
     @PostMapping("/sell-one")
-    public ResponseEntity<BookInventory> sellOneBook(@RequestParam String bookId, @RequestParam String bookStoreId) {
-        return bookInventoryService.sellOneBook(bookId, bookStoreId).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
+    public ResponseEntity<String> sellOneBook(@RequestParam String bookId, @RequestParam String bookStoreId) {
+        boolean success = bookInventoryService.sellMultipleBooks(bookId, bookStoreId, 1);
+        if (success) {
+            return ResponseEntity.ok("Successfully sold " + 1 + " books.");
+        } else {
+            return ResponseEntity.badRequest().body("Not enough stock available.");
+        }
     }
 
     @PostMapping("/sell-multiple")

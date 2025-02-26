@@ -1,7 +1,7 @@
 package com.example.Mini_Bookstore.service;
 
 
-import com.example.Mini_Bookstore.entity.BookStore;
+import com.example.Mini_Bookstore.dto.BookStoreDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,13 +9,13 @@ import java.util.Optional;
 
 @Service
 public interface BookStoreService {
-    BookStore addBookStore(BookStore bookStore);
+    BookStoreDTO addBookStore(BookStoreDTO bookStoreDTO);
 
-    Optional<BookStore> getBookStoreByID(String id);
+    Optional<BookStoreDTO> getBookStoreByID(String id);
 
-    BookStore updateBookStore(String id, BookStore updatedBookStore);
+    BookStoreDTO updateBookStore(String id, BookStoreDTO updatedBookStoreDTO);
 
-    Optional<BookStore> deleteBookStoreById(String id);
+    Optional<BookStoreDTO> deleteBookStoreById(String id);
 
-    List<BookStore> getAllBookStores();
+    List<BookStoreDTO> getAllBookStores();
 }
