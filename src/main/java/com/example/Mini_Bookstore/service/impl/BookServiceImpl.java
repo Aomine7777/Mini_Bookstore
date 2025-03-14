@@ -5,15 +5,16 @@ import com.example.Mini_Bookstore.dto.BookDTO;
 import com.example.Mini_Bookstore.entity.Book;
 import com.example.Mini_Bookstore.entity.BookInventory;
 import com.example.Mini_Bookstore.entity.Category;
+import com.example.Mini_Bookstore.exceptions.BookNotFoundException;
+import com.example.Mini_Bookstore.exceptions.InvalidBookDataException;
 import com.example.Mini_Bookstore.repository.BookInventoryRepository;
 import com.example.Mini_Bookstore.repository.BookRepository;
 import com.example.Mini_Bookstore.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,18 +25,22 @@ public class BookServiceImpl implements BookService {
     private final BookInventoryRepository bookInventoryRepository;
 
     public BookDTO addBook(BookDTO bookDTO) {
+        if (bookDTO == null || bookDTO.title() == null || bookDTO.author() == null) {
+            throw new InvalidBookDataException("Book data is invalid or missing required fields.");
+        }
         Book book = bookDTO.toEntity();
-        return BookDTO.fromEntity(bookRepository.save(book));
+        return new BookDTO(bookRepository.save(book));
     }
 
-    public Optional<BookDTO> getBookById(String id) {
-        return bookRepository.findById(id).map(BookDTO::new);
+    public BookDTO getBookById(String id) {
+        return bookRepository.findById(id).map(BookDTO::new)
+                .orElseThrow(() -> new BookNotFoundException("Book with ID " + id + " not found"));
     }
 
 
     public List<BookDTO> getAllBooks() {
         return bookRepository.findAll().stream()
-             .map(BookDTO::fromEntity)
+             .map(BookDTO::new)
              .collect(Collectors.toList());
     }
 
@@ -46,40 +51,28 @@ public class BookServiceImpl implements BookService {
              .sum();
     }
 
-
     public BookDTO updateBook(BookDTO bookDTO) {
-        Book updatedBook = bookDTO.toEntity();
-        return BookDTO.fromEntity(bookRepository.save(updatedBook));
-    }
-
-
-    @Transactional
-    public boolean sellMultipleBooks(String bookId, String bookStoreId, int quantity) {
-        Optional<BookInventory> inventoryOpt = bookInventoryRepository.findByBookIdAndBookStoreId(bookId, bookStoreId);
-        if (inventoryOpt.isPresent()) {
-            BookInventory inventory = inventoryOpt.get();
-            if (inventory.getTotalCount() >= quantity) {
-                inventory.setTotalCount(inventory.getTotalCount() - quantity);
-                inventory.setSoldCount(inventory.getSoldCount() + quantity);
-                bookInventoryRepository.save(inventory);
-                return true;
-            }
+        if(bookDTO == null || bookDTO.title() == null || bookDTO.author() == null) {
+            throw new InvalidBookDataException("Book data is invalid or missing required fields.");
         }
-        return false;
+        Book updatedBook = bookDTO.toEntity();
+        return new BookDTO(bookRepository.save(updatedBook));
     }
-
 
     public List<BookDTO> searchBooks(Category category, String keyword) {
-        List<Book> books;
+        List<Book> books = new ArrayList<>();
         if (category != null && keyword != null && !keyword.isEmpty()) {
-            books = bookRepository.findByCategoryAndTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(category, keyword, keyword);
+            books.addAll(bookRepository.findByCategoryAndTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(category, keyword, keyword));
         } else if (category != null) {
-            books = bookRepository.findByCategory(category);
+            books.addAll(bookRepository.findByCategory(category));
         } else if (keyword != null && !keyword.isEmpty()) {
-            books = bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(keyword, keyword);
+            books.addAll(bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(keyword, keyword));
         } else {
-            books = bookRepository.findAll();
+            books.addAll(bookRepository.findAll());
         }
-        return books.stream().map(BookDTO::new).toList();
+
+        return books.stream()
+            .map(BookDTO::new)
+            .toList();
     }
 }

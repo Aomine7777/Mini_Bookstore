@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/books")
@@ -26,9 +25,8 @@ public class BookController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BookDTO> getBookById(@PathVariable String id) {
-        Optional<BookDTO> book = bookService.getBookById(id);
-        return book.map(ResponseEntity::ok)
-             .orElseGet(() -> ResponseEntity.notFound().build());
+        BookDTO book = bookService.getBookById(id);
+        return book != null ? ResponseEntity.ok(book) : ResponseEntity.notFound().build();
     }
 
     @GetMapping
@@ -44,18 +42,6 @@ public class BookController {
     @PutMapping
     public ResponseEntity<BookDTO> updateBook(@RequestBody BookDTO bookDTO) {
         return ResponseEntity.ok(bookService.updateBook(bookDTO));
-    }
-
-    @PostMapping("/{bookId}/sell/{bookStoreId}")
-    public ResponseEntity<String> sellOneBook(@PathVariable String bookId, @PathVariable String bookStoreId) {
-        boolean success = bookService.sellMultipleBooks(bookId, bookStoreId,1);
-        return success ? ResponseEntity.ok("Book sold") : ResponseEntity.badRequest().body("Not enough stock");
-    }
-
-    @PostMapping("/{bookId}/sell/{bookStoreId}/{quantity}")
-    public ResponseEntity<String> sellMultipleBooks(@PathVariable String bookId, @PathVariable String bookStoreId, @PathVariable int quantity) {
-        boolean success = bookService.sellMultipleBooks(bookId, bookStoreId, quantity);
-        return success ? ResponseEntity.ok("Books sold") : ResponseEntity.badRequest().body("Not enough stock");
     }
 
     @GetMapping("/search")

@@ -24,9 +24,8 @@ public class BookStoreController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BookStoreDTO> getBookStoreById(@PathVariable String id) {
-        return bookStoreService.getBookStoreByID(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        BookStoreDTO bookStore = bookStoreService.getBookStoreByID(id);
+        return ResponseEntity.ok(bookStore);
     }
 
     @GetMapping
@@ -37,22 +36,13 @@ public class BookStoreController {
 
     @PutMapping("/{id}")
     public ResponseEntity<BookStoreDTO> updateBookStore(@PathVariable String id, @RequestBody BookStoreDTO bookStoreDTO) {
-        try {
-            BookStoreDTO updatedBookStore = bookStoreService.updateBookStore(id, bookStoreDTO);
-            return ResponseEntity.ok(updatedBookStore);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        BookStoreDTO updatedBookStore = bookStoreService.updateBookStore(id, bookStoreDTO);
+        return ResponseEntity.ok(updatedBookStore);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<BookStoreDTO> deleteBookStore(@PathVariable String id) {
-        try {
-            return bookStoreService.deleteBookStoreById(id)
-                    .map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        BookStoreDTO deletedBookStore = bookStoreService.deleteBookStoreById(id);
+        return ResponseEntity.ok(deletedBookStore);
     }
 }

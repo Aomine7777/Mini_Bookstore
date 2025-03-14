@@ -24,13 +24,9 @@ public record BookInventoryDTO(
         );
     }
 
-    public static BookInventoryDTO fromEntity(BookInventory bookInventory) {
-        return new BookInventoryDTO(bookInventory);
-    }
-
     public static List<BookInventoryDTO> fromEntities(List<BookInventory> bookInventories) {
         return bookInventories.stream()
-                .map(BookInventoryDTO::fromEntity)
+                .map(BookInventoryDTO::new)
                 .collect(Collectors.toList());
     }
 

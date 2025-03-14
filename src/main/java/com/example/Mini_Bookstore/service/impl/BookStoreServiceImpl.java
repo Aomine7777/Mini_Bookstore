@@ -1,14 +1,17 @@
 package com.example.Mini_Bookstore.service.impl;
 
+import com.example.Mini_Bookstore.dto.BookInventoryDTO;
 import com.example.Mini_Bookstore.dto.BookStoreDTO;
+import com.example.Mini_Bookstore.entity.BookInventory;
 import com.example.Mini_Bookstore.entity.BookStore;
+import com.example.Mini_Bookstore.exceptions.BookStoreNotFoundException;
+import com.example.Mini_Bookstore.exceptions.InvalidBookStoreDataException;
 import com.example.Mini_Bookstore.repository.BookStoreRepository;
 import com.example.Mini_Bookstore.service.BookStoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,14 +22,18 @@ public class BookStoreServiceImpl implements BookStoreService {
 
     @Override
     public BookStoreDTO addBookStore(BookStoreDTO bookStoreDTO) {
+        if (bookStoreDTO == null || bookStoreDTO.name() == null || bookStoreDTO.location() == null) {
+            throw new InvalidBookStoreDataException("Invalid book store data. Name and location are required.");
+        }
         BookStore bookStore = bookStoreDTO.toEntity();
-        return BookStoreDTO.fromEntity(bookStoreRepository.save(bookStore));
+        return new BookStoreDTO(bookStoreRepository.save(bookStore));
     }
 
     @Override
-    public Optional<BookStoreDTO> getBookStoreByID(String id) {
+    public BookStoreDTO getBookStoreByID(String id) {
         return bookStoreRepository.findById(id)
-                .map(BookStoreDTO::new);
+                .map(BookStoreDTO::new)
+                .orElseThrow(() -> new BookStoreNotFoundException("Book store not found with ID: " + id));
     }
 
     public List<BookStoreDTO> getAllBookStores() {
@@ -37,25 +44,29 @@ public class BookStoreServiceImpl implements BookStoreService {
 
     @Override
     public BookStoreDTO updateBookStore(String id, BookStoreDTO updatedBookStoreDTO) {
+        if (updatedBookStoreDTO == null || updatedBookStoreDTO.name() == null || updatedBookStoreDTO.location() == null) {
+            throw new InvalidBookStoreDataException("Invalid book store data. Name and location are required.");
+        }
         return bookStoreRepository.findById(id)
                 .map(existingBookStore -> {
                     existingBookStore.setName(updatedBookStoreDTO.name());
                     existingBookStore.setLocation(updatedBookStoreDTO.location());
-                    existingBookStore.setBookInventories(updatedBookStoreDTO.bookInventories());
+
+                    List<BookInventory> updateBookInventories = updatedBookStoreDTO.bookInventories().stream()
+                                    .map(BookInventoryDTO::toEntity)
+                                    .toList();
+                    existingBookStore.setBookInventories(updateBookInventories);
+
                     BookStore updatedBookStore = bookStoreRepository.save(existingBookStore);
                     return new BookStoreDTO(updatedBookStore);
-                }).orElseThrow(() -> new RuntimeException("BookStore not found with id: " + id));
+                }).orElseThrow(() -> new BookStoreNotFoundException("BookStore not found with id: " + id));
     }
 
     @Override
-    public Optional<BookStoreDTO> deleteBookStoreById(String id) {
-        Optional<BookStore> bookStoreOptional = bookStoreRepository.findById(id);
-        if (bookStoreOptional.isPresent()) {
-            BookStore bookStore = bookStoreOptional.get();
-            bookStoreRepository.deleteById(id);
-            return Optional.of(new BookStoreDTO(bookStore));
-        } else {
-            throw new RuntimeException("BookStore not found with id: " + id);
-        }
+    public BookStoreDTO deleteBookStoreById(String id) {
+        BookStore bookStore = bookStoreRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("BookStore not found with id: " + id));
+        bookStoreRepository.deleteById(id);
+        return new BookStoreDTO(bookStore);
     }
 }

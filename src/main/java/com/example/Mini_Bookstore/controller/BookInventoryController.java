@@ -1,6 +1,7 @@
 package com.example.Mini_Bookstore.controller;
 
 import com.example.Mini_Bookstore.dto.BookInventoryDTO;
+import com.example.Mini_Bookstore.dto.request.SellBookRequest;
 import com.example.Mini_Bookstore.service.BookInventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,8 @@ public class BookInventoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BookInventoryDTO> getBookInventoryById(@PathVariable String id) {
-        return bookInventoryService.getBookInventoryById(id)
-             .map(ResponseEntity::ok)
-             .orElse(ResponseEntity.notFound().build());
+        BookInventoryDTO bookInventory = bookInventoryService.getBookInventoryById(id);
+        return ResponseEntity.ok(bookInventory);
     }
 
     @GetMapping
@@ -44,7 +44,8 @@ public class BookInventoryController {
 
     @PutMapping("/{id}")
     public ResponseEntity<BookInventoryDTO> updateBookInventory(@PathVariable String id, @RequestBody BookInventoryDTO bookInventoryDTO) {
-        return bookInventoryService.updateBookInventory(id, bookInventoryDTO).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        BookInventoryDTO updatedInventory = bookInventoryService.updateBookInventory(id, bookInventoryDTO);
+        return ResponseEntity.ok(updatedInventory);
     }
 
     @DeleteMapping("/{id}")
@@ -53,21 +54,11 @@ public class BookInventoryController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/sell-one")
-    public ResponseEntity<String> sellOneBook(@RequestParam String bookId, @RequestParam String bookStoreId) {
-        boolean success = bookInventoryService.sellMultipleBooks(bookId, bookStoreId, 1);
+    @PostMapping("/sell")
+    public ResponseEntity<String> sellBooks(@RequestBody SellBookRequest request) {
+        boolean success = bookInventoryService.sellBooks(request.bookId(), request.bookStoreId(), request.quantity());
         if (success) {
-            return ResponseEntity.ok("Successfully sold " + 1 + " books.");
-        } else {
-            return ResponseEntity.badRequest().body("Not enough stock available.");
-        }
-    }
-
-    @PostMapping("/sell-multiple")
-    public ResponseEntity<String> sellMultipleBooks(@RequestParam String bookId, @RequestParam String bookStoreId, @RequestParam int quantity) {
-        boolean success = bookInventoryService.sellMultipleBooks(bookId, bookStoreId, quantity);
-        if (success) {
-            return ResponseEntity.ok("Successfully sold " + quantity + " books.");
+            return ResponseEntity.ok("Successfully sold " + request.quantity() + " books.");
         } else {
             return ResponseEntity.badRequest().body("Not enough stock available.");
         }

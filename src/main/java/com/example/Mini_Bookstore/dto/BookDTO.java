@@ -22,9 +22,7 @@ public record BookDTO(
                 book.getPublicationDate()
         );
     }
-    public static BookDTO fromEntity(Book book) {
-        return new BookDTO(book);
-    }
+
     public Book toEntity() {
         return new Book(id, title, author, category, addedAt, publicationDate);
     }
