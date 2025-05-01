@@ -25,9 +25,6 @@ public class BookServiceImpl implements BookService {
     private final BookInventoryRepository bookInventoryRepository;
 
     public BookDTO addBook(BookDTO bookDTO) {
-        if (bookDTO == null || bookDTO.title() == null || bookDTO.author() == null) {
-            throw new InvalidBookDataException("Book data is invalid or missing required fields.");
-        }
         Book book = bookDTO.toEntity();
         return new BookDTO(bookRepository.save(book));
     }
@@ -52,9 +49,6 @@ public class BookServiceImpl implements BookService {
     }
 
     public BookDTO updateBook(BookDTO bookDTO) {
-        if(bookDTO == null || bookDTO.title() == null || bookDTO.author() == null) {
-            throw new InvalidBookDataException("Book data is invalid or missing required fields.");
-        }
         Book updatedBook = bookDTO.toEntity();
         return new BookDTO(bookRepository.save(updatedBook));
     }

@@ -2,6 +2,7 @@ package com.example.Mini_Bookstore.controller;
 
 import com.example.Mini_Bookstore.dto.BookStoreDTO;
 import com.example.Mini_Bookstore.service.BookStoreService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,15 +18,13 @@ public class BookStoreController {
     private final BookStoreService bookStoreService;
 
     @PostMapping
-    public ResponseEntity<BookStoreDTO> addBookStore(@RequestBody BookStoreDTO bookStoreDTO) {
-        BookStoreDTO createdBookStore = bookStoreService.addBookStore(bookStoreDTO);
-        return ResponseEntity.ok(createdBookStore);
+    public ResponseEntity<BookStoreDTO> addBookStore(@Valid @RequestBody BookStoreDTO bookStoreDTO) {
+        return ResponseEntity.ok(bookStoreService.addBookStore(bookStoreDTO));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BookStoreDTO> getBookStoreById(@PathVariable String id) {
-        BookStoreDTO bookStore = bookStoreService.getBookStoreByID(id);
-        return ResponseEntity.ok(bookStore);
+        return ResponseEntity.ok(bookStoreService.getBookStoreByID(id));
     }
 
     @GetMapping
@@ -35,14 +34,12 @@ public class BookStoreController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookStoreDTO> updateBookStore(@PathVariable String id, @RequestBody BookStoreDTO bookStoreDTO) {
-        BookStoreDTO updatedBookStore = bookStoreService.updateBookStore(id, bookStoreDTO);
-        return ResponseEntity.ok(updatedBookStore);
+    public ResponseEntity<BookStoreDTO> updateBookStore(@PathVariable String id, @Valid @RequestBody BookStoreDTO bookStoreDTO) {
+        return ResponseEntity.ok(bookStoreService.updateBookStore(id, bookStoreDTO));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<BookStoreDTO> deleteBookStore(@PathVariable String id) {
-        BookStoreDTO deletedBookStore = bookStoreService.deleteBookStoreById(id);
-        return ResponseEntity.ok(deletedBookStore);
+        return ResponseEntity.ok(bookStoreService.deleteBookStoreById(id));
     }
 }

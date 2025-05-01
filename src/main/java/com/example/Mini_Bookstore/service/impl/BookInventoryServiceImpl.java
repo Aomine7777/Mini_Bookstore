@@ -24,9 +24,6 @@ public class BookInventoryServiceImpl implements BookInventoryService {
 
     @Override
     public BookInventoryDTO addBookInventory(BookInventoryDTO bookInventoryDTO) {
-        if (bookInventoryDTO == null || bookInventoryDTO.bookId() == null || bookInventoryDTO.bookStoreId() == null) {
-            throw new InvalidBookInventoryDataException("Invalid book inventory data. Book ID and Store ID are required.");
-        }
         return new BookInventoryDTO(bookInventoryRepository.save(bookInventoryDTO.toEntity()));
     }
 
@@ -54,9 +51,6 @@ public class BookInventoryServiceImpl implements BookInventoryService {
     public BookInventoryDTO updateBookInventory(String id, BookInventoryDTO bookInventoryDTO) {
         return bookInventoryRepository.findById(id)
                 .map(existingInventory -> {
-                    if (bookInventoryDTO.bookId() == null || bookInventoryDTO.bookStoreId() == null) {
-                        throw new InvalidBookInventoryDataException("Book ID and Store ID must not be null.");
-                        }
             existingInventory.setBookId(bookInventoryDTO.bookId());
             existingInventory.setBookStoreId(bookInventoryDTO.bookStoreId());
             existingInventory.setPrice(bookInventoryDTO.price());

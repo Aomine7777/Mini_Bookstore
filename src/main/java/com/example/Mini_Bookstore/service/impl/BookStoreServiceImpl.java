@@ -22,9 +22,6 @@ public class BookStoreServiceImpl implements BookStoreService {
 
     @Override
     public BookStoreDTO addBookStore(BookStoreDTO bookStoreDTO) {
-        if (bookStoreDTO == null || bookStoreDTO.name() == null || bookStoreDTO.location() == null) {
-            throw new InvalidBookStoreDataException("Invalid book store data. Name and location are required.");
-        }
         BookStore bookStore = bookStoreDTO.toEntity();
         return new BookStoreDTO(bookStoreRepository.save(bookStore));
     }
@@ -44,9 +41,6 @@ public class BookStoreServiceImpl implements BookStoreService {
 
     @Override
     public BookStoreDTO updateBookStore(String id, BookStoreDTO updatedBookStoreDTO) {
-        if (updatedBookStoreDTO == null || updatedBookStoreDTO.name() == null || updatedBookStoreDTO.location() == null) {
-            throw new InvalidBookStoreDataException("Invalid book store data. Name and location are required.");
-        }
         return bookStoreRepository.findById(id)
                 .map(existingBookStore -> {
                     existingBookStore.setName(updatedBookStoreDTO.name());

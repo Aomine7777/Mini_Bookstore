@@ -4,6 +4,7 @@ import com.example.Mini_Bookstore.dto.BookDTO;
 import com.example.Mini_Bookstore.entity.Book;
 import com.example.Mini_Bookstore.entity.Category;
 import com.example.Mini_Bookstore.service.BookService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public ResponseEntity<BookDTO> addBook(@RequestBody BookDTO bookDTO) {
+    public ResponseEntity<BookDTO> addBook(@Valid @RequestBody BookDTO bookDTO) {
         Book savedBook = bookService.addBook(bookDTO).toEntity();
         return ResponseEntity.ok(new BookDTO(savedBook));
     }
@@ -40,7 +41,7 @@ public class BookController {
     }
 
     @PutMapping
-    public ResponseEntity<BookDTO> updateBook(@RequestBody BookDTO bookDTO) {
+    public ResponseEntity<BookDTO> updateBook(@Valid @RequestBody BookDTO bookDTO) {
         return ResponseEntity.ok(bookService.updateBook(bookDTO));
     }
 

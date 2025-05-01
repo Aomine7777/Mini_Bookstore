@@ -36,34 +36,6 @@
 			"response": []
 		},
 		{
-			"name": "ADD INVENTORY",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1,\r\n    \"book\":{\r\n        \"id\": 1,\r\n        \"title\": \"To Kill a Mockingbird\",\r\n        \"author\": \"Harper Lee\",\r\n        \"Category\": {\r\n            \"id\": \"1\",\r\n            \"name\": \"Fiction\"\r\n        },\r\n        \"addedAt\": \"2024-11-21T10:00:00\",\r\n        \"publicationDate\": \"1999-07-11\"\r\n    },\r\n    \"bookStore\": {\r\n        \"id\": 1,\r\n        \"name\": \"Goblin's Store\",\r\n        \"location\": \"123 Elm Street\"\r\n    },\r\n    \"price\": 99,\r\n    \"totalCount\": 77,\r\n    \"soldCount\": 7\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/inventory",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"inventory"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "ADD BOOK STORE",
 			"request": {
 				"method": "POST",
@@ -155,35 +127,6 @@
 						{
 							"key": "category",
 							"value": "ROMANCE"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "SELL BOOKS",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/api/books/1/1/sell?quantity=1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"books",
-						"1",
-						"1",
-						"sell"
-					],
-					"query": [
-						{
-							"key": "quantity",
-							"value": "1"
 						}
 					]
 				}
@@ -427,43 +370,6 @@
 						"api",
 						"book-inventory",
 						"sell-one"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "SELL MULTIPLE BOOKS",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "bookId",
-						"value": "67b2510d9eaf5d0ce736379d",
-						"type": "text"
-					},
-					{
-						"key": "bookStoreId",
-						"value": "67b2645c56d18d2323e41b78",
-						"type": "text"
-					},
-					{
-						"key": "quantity",
-						"value": "7",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/book-inventory/sell-multiple",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"book-inventory",
-						"sell-multiple"
 					]
 				}
 			},

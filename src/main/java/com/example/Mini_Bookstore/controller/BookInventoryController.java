@@ -3,6 +3,7 @@ package com.example.Mini_Bookstore.controller;
 import com.example.Mini_Bookstore.dto.BookInventoryDTO;
 import com.example.Mini_Bookstore.dto.request.SellBookRequest;
 import com.example.Mini_Bookstore.service.BookInventoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +18,13 @@ public class BookInventoryController {
     private final BookInventoryService bookInventoryService;
 
     @PostMapping
-    public ResponseEntity<BookInventoryDTO> addBookInventory(@RequestBody BookInventoryDTO bookInventoryDTO) {
+    public ResponseEntity<BookInventoryDTO> addBookInventory(@Valid @RequestBody BookInventoryDTO bookInventoryDTO) {
         return ResponseEntity.ok(bookInventoryService.addBookInventory(bookInventoryDTO));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BookInventoryDTO> getBookInventoryById(@PathVariable String id) {
-        BookInventoryDTO bookInventory = bookInventoryService.getBookInventoryById(id);
-        return ResponseEntity.ok(bookInventory);
+        return ResponseEntity.ok(bookInventoryService.getBookInventoryById(id));
     }
 
     @GetMapping
@@ -43,9 +43,8 @@ public class BookInventoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookInventoryDTO> updateBookInventory(@PathVariable String id, @RequestBody BookInventoryDTO bookInventoryDTO) {
-        BookInventoryDTO updatedInventory = bookInventoryService.updateBookInventory(id, bookInventoryDTO);
-        return ResponseEntity.ok(updatedInventory);
+    public ResponseEntity<BookInventoryDTO> updateBookInventory(@PathVariable String id,@Valid @RequestBody BookInventoryDTO bookInventoryDTO) {
+        return ResponseEntity.ok(bookInventoryService.updateBookInventory(id, bookInventoryDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -55,7 +54,7 @@ public class BookInventoryController {
     }
 
     @PostMapping("/sell")
-    public ResponseEntity<String> sellBooks(@RequestBody SellBookRequest request) {
+    public ResponseEntity<String> sellBooks(@Valid @RequestBody SellBookRequest request) {
         boolean success = bookInventoryService.sellBooks(request.bookId(), request.bookStoreId(), request.quantity());
         if (success) {
             return ResponseEntity.ok("Successfully sold " + request.quantity() + " books.");
@@ -66,13 +65,11 @@ public class BookInventoryController {
 
     @GetMapping("/sold-by-author/{author}")
     public ResponseEntity<Long> getSoldBooksByAuthor(@PathVariable String author) {
-        long soldCount = bookInventoryService.getSoldBooksByAuthor(author);
-        return ResponseEntity.ok(soldCount);
+        return ResponseEntity.ok(bookInventoryService.getSoldBooksByAuthor(author));
     }
 
     @GetMapping("/sold-by-category/{category}")
     public ResponseEntity<Long> getSoldBooksByCategory(@PathVariable String category) {
-        long soldCount = bookInventoryService.getSoldBooksByCategory(category);
-        return ResponseEntity.ok(soldCount);
+        return ResponseEntity.ok(bookInventoryService.getSoldBooksByCategory(category));
     }
 }
